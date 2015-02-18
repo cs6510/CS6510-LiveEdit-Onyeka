@@ -85,6 +85,13 @@ public class ServerLayout {
 
   /**
    * Relative path of the
+   * {@link com.google.appinventor.shared.rpc.webapp.WebAppUploadService} within
+   * the ODE GWT module.
+   */
+  public static final String WEBAPP_UPLOAD_SERVICE = "webapp_upload";
+
+  /**
+   * Relative path of the
    * {@link com.google.appinventor.server.TosServlet}
    * within the ODE GWT module.
    */
@@ -141,6 +148,12 @@ public class ServerLayout {
   public static final String UPLOAD_SERVLET = "upload";
 
   /**
+   * Relative path of the {@link com.google.appinventor.server.WebAppLaunchServlet}
+   * within the ODE GWT module.
+   */
+  public static final String WEBAPP_SERVLET_BASE = "webapp_launch";
+
+  /**
    * Relative path within {@link com.google.appinventor.server.UploadServlet}
    * for uploading a project
    */
@@ -157,6 +170,12 @@ public class ServerLayout {
    * for uploading a user file
    */
   public static final String UPLOAD_USERFILE = "userfile";
+
+  /**
+   * Relative path of the {@link com.google.appinventor.server.WebAppLaunchServlet}
+   * for uploading a webapp file.
+   */
+  public static final String WEBAPP_FILE = "webapp";
 
   /**
    * Relative path of the {@link com.google.appinventor.server.GetMotdServiceImpl}
@@ -211,6 +230,13 @@ public class ServerLayout {
    * Name of the form element to upload user files.
    */
   public static final String UPLOAD_USERFILE_FORM_ELEMENT = "uploadUserFile";
+
+  /**
+   * Generate Web app launch relative path
+   */
+  public static String genRelativeWebAppLaunchPath(String target) {
+    return WEBAPP_SERVLET_BASE + "/" + WEBAPP_FILE + "/" + target;
+  }
 
   public static String genRelativeDownloadPath(long projectId, String target) {
     return DOWNLOAD_SERVLET_BASE + DOWNLOAD_PROJECT_OUTPUT + "/" + projectId + "/" + target;

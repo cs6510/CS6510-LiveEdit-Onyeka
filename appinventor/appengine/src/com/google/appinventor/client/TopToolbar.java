@@ -36,8 +36,11 @@ import com.google.appinventor.components.common.YaVersion;
 import com.google.appinventor.shared.rpc.ServerLayout;
 import com.google.appinventor.shared.rpc.project.ProjectRootNode;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidProjectNode;
+import com.google.appinventor.shared.rpc.webapp.WebAppUploadService;
+import com.google.appinventor.shared.rpc.webapp.WebAppUploadServiceAsync;
 import com.google.appinventor.shared.storage.StorageUtil;
 import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
@@ -53,6 +56,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import static com.google.appinventor.client.Ode.MESSAGES;
 
@@ -90,6 +96,7 @@ public class TopToolbar extends Composite {
   private static final String WIDGET_NAME_WIRELESS_BUTTON = "Wireless";
   private static final String WIDGET_NAME_EMULATOR_BUTTON = "Emulator";
   private static final String WIDGET_NAME_USB_BUTTON = "Usb";
+  private static final String WIDGET_NAME_WEB_APP_BUTTON = "Live Web App";
   private static final String WIDGET_NAME_RESET_BUTTON = "Reset";
   private static final String WIDGET_NAME_HARDRESET_BUTTON = "HardReset";
   private static final String WIDGET_NAME_PROJECT = "Project";
@@ -171,6 +178,8 @@ public class TopToolbar extends Composite {
         MESSAGES.emulatorMenuItem(), new EmulatorAction()));
     connectItems.add(new DropDownItem(WIDGET_NAME_USB_BUTTON, MESSAGES.usbMenuItem(),
         new UsbAction()));
+    connectItems.add(new DropDownItem(WIDGET_NAME_WEB_APP_BUTTON, MESSAGES.webAppMenuItem(),
+        new webAppAction()));
     connectItems.add(null);
     connectItems.add(new DropDownItem(WIDGET_NAME_RESET_BUTTON, MESSAGES.resetConnectionsMenuItem(),
         new ResetAction()));
@@ -331,6 +340,47 @@ public class TopToolbar extends Composite {
     public void execute() {
       if (Ode.getInstance().okToConnect()) {
         startRepl(true, false, true);
+      }
+    }
+  }
+
+  private class webAppAction implements Command {
+    private void doWebAppUpload(String fileName, String fileData) {
+      final AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+        @Override
+        public void onFailure(Throwable caught) {
+          OdeLog.log(MESSAGES.webAppUploadError());
+        }
+        @Override
+        public void onSuccess(Void msg) {
+          //OdeLog.log("=====SUCCESS=====");
+        }
+      };
+      Ode.getInstance().getWebAppUploadService().uploadFile(fileName, fileData, callback);
+    }
+
+    private String generateTestHtml() {
+      HTML fileData = new HTML(" <!DOCTYPE html>\n" +
+              "<html>\n" +
+              "<head>\n" +
+              "  <title>Testing Web App Launch</title>\n" +
+              "</head>\n" +
+              "<body>\n" +
+                "<div>\n" +
+                  "<img src='http://images.clipartpanda.com/smiley-face-thumbs-up-cartoon-smiley-fac1.jpg'/>\n" +
+                "</div>\n" +
+                "<h1> This is a page</h1>\n" +
+              "</body>\n" +
+              "</html>");
+      return fileData.getHTML();
+    }
+
+    @Override
+    public void execute() {
+      String fileName = "test.html";
+      if (Ode.getInstance().okToConnect()) {
+        doWebAppUpload(fileName, generateTestHtml());
+        Window.open(ServerLayout.genRelativeWebAppLaunchPath(fileName), "test", "scrollbars=1");
       }
     }
   }

@@ -488,6 +488,15 @@ public interface OdeMessages extends Messages {
   @Description("Message providing details about starting the emulator connection.")
   String emulatorMenuItem();
 
+  // Used in TopToolbar.java
+  @DefaultMessage("Live Web App")
+  @Description("Live Web App option")
+  String webAppMenuItem();
+
+  @DefaultMessage("Server error: web app upload failed!")
+  @Description("Error message reported when the web app upload fails")
+  String webAppUploadError();
+
   @DefaultMessage("Report an Issue")
   @Description("Link for Report an Issue form")
   String feedbackLink();
